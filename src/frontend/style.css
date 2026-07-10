@@ -1,0 +1,138 @@
+:root {
+    --hunter-green: #386641ff;
+    --sage-green: #6a994eff;
+    --yellow-green: #a7c957ff;
+    --vanilla-cream: #f2e8cfff;
+    --blushed-brick: #bc4749ff;
+}
+
+@font-face {
+    font-family: "Axia";
+    src: url("assets/axia-font-family/Axia-Regular-TRIAL.otf") format("opentype");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Axia";
+    src: url("assets/axia-font-family/Axia-Bold-TRIAL.otf") format("opentype");
+    font-weight: 700;
+    font-style: normal;
+}
+
+body {
+    background-color: var(--vanilla-cream);
+    color: var(--hunter-green);
+    font-family: "Axia", sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    user-select: none;
+}
+
+#app {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    transform: translateX(20px);
+}
+
+.screen.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(0);
+}
+
+.screen.slide-out {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.btn {
+    background: transparent;
+    border: 2px solid var(--hunter-green);
+    color: var(--hunter-green);
+    padding: 1rem 2rem;
+    margin: 0.5rem;
+    font-family: inherit;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 300px;
+}
+
+.btn:hover {
+    background: var(--hunter-green);
+    color: var(--vanilla-cream);
+}
+
+/* Checklist Task Styling */
+#task-container {
+    text-align: center;
+    cursor: pointer;
+    padding: 2rem;
+    transition: all 0.3s ease;
+}
+
+.task-text {
+    font-size: 3rem;
+    font-weight: 400;
+    transition: all 0.3s ease;
+}
+
+.task-text.completed {
+    color: var(--sage-green);
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.task-info {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    color: var(--blushed-brick);
+    height: 1.5rem;
+}
+
+/* Quick Job Styling */
+.qj-title {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+}
+.qj-input-wrapper {
+    font-size: 4rem;
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+}
+.qj-input {
+    background: transparent;
+    border: none;
+    border-bottom: 4px solid var(--hunter-green);
+    color: var(--hunter-green);
+    font-family: inherit;
+    font-size: 4rem;
+    width: 150px;
+    text-align: center;
+    outline: none;
+}

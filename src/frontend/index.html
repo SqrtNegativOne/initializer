@@ -52,7 +52,10 @@
             }, 50);
         }
 
-        window.addEventListener('pywebviewready', async function() {
+        async function loadButtons() {
+            if (window._buttonsLoaded) return;
+            window._buttonsLoaded = true;
+
             const routines = await pywebview.api.get_routines();
             const startScreen = document.getElementById('screen-start');
             startScreen.innerHTML = ''; // clear existing
@@ -64,9 +67,22 @@
                 btn.onclick = () => startRoutine(routine.name);
                 startScreen.appendChild(btn);
             });
-        });
+        }
+
+        if (window.pywebview && window.pywebview.api) {
+            loadButtons();
+        } else {
+            window.addEventListener('pywebviewready', loadButtons);
+            let checkTimer = setInterval(() => {
+                if (window.pywebview && window.pywebview.api) {
+                    clearInterval(checkTimer);
+                    loadButtons();
+                }
+            }, 100);
+        }
 
         async function startRoutine(name) {
+            await pywebview.api.unfullscreen_and_maximize();
             const response = await pywebview.api.start_routine(name);
             if (response && response.status === 'ok') {
                 if (response.type === 'checklist') {

@@ -21,6 +21,11 @@ class Api:
     def set_window(self, window):
         self.window = window
 
+    def unfullscreen_and_maximize(self):
+        if self.window:
+            self.window.toggle_fullscreen()
+            self.window.maximize()
+
     def get_routines(self):
         return self.routines
 

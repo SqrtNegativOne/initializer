@@ -87,6 +87,46 @@ body {
     color: var(--vanilla-cream);
 }
 
+/* Checklist overlay mode */
+body.checklist-mode {
+    background: transparent;
+}
+
+body.checklist-mode #screen-checklist {
+    background: rgba(0, 0, 0, 0.72);
+    border-radius: 14px;
+    color: var(--vanilla-cream);
+    padding: 1rem;
+    box-sizing: border-box;
+    backdrop-filter: blur(8px);
+}
+
+body.checklist-mode #task-container {
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+body.checklist-mode .task-text {
+    font-size: 1.6rem;
+    line-height: 1.3;
+    color: var(--vanilla-cream);
+}
+
+body.checklist-mode .task-text.completed {
+    color: var(--yellow-green);
+}
+
+body.checklist-mode .task-info {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    color: var(--yellow-green);
+}
+
 /* Checklist Task Styling */
 #task-container {
     text-align: center;

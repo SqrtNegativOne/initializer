@@ -82,13 +82,15 @@
         }
 
         async function startRoutine(name) {
-            await pywebview.api.unfullscreen_and_maximize();
             const response = await pywebview.api.start_routine(name);
             if (response && response.status === 'ok') {
                 if (response.type === 'checklist') {
+                    document.body.classList.add('checklist-mode');
                     showScreen('screen-checklist');
                     loadNextTask();
+                    pywebview.api.enter_checklist_mode();
                 } else if (response.type === 'quick_job') {
+                    await pywebview.api.unfullscreen_and_maximize();
                     showScreen('screen-quick-job');
                     setTimeout(() => document.getElementById('qj-minutes').focus(), 100);
                 }

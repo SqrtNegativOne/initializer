@@ -17,6 +17,14 @@ def get_html_path():
 
 if __name__ == '__main__':
     api = Api()
-    window = webview.create_window('Genesis', get_html_path(), js_api=api, fullscreen=True)
+    window = webview.create_window(
+        'Genesis',
+        get_html_path(),
+        js_api=api,
+        fullscreen=True,
+        frameless=True,
+        transparent=True,
+        easy_drag=False,
+    )
     api.set_window(window)
     webview.start()

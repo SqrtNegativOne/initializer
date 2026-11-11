@@ -1,17 +1,23 @@
 import subprocess
 import os
-import yaml
 from pathlib import Path
+
+import webview
+import yaml
 
 # Locate the checklists directory relative to the src folder
 CHECKLISTS_DIR = Path(__file__).parent.parent.parent / "checklists"
+
+OVERLAY_WIDTH = 380
+OVERLAY_HEIGHT = 220
+OVERLAY_MARGIN = 24
 
 class Api:
     def __init__(self):
         self.current_checklist_name = None
         self.current_tasks = []
         self.current_task_index = 0
-        self.window = None
+        self._window = None
         self.routines = [
             {"name": "genesis", "type": "checklist", "file": "calibration.yaml"},
             {"name": "speculatio", "type": "quit"},
@@ -19,12 +25,28 @@ class Api:
         ]
 
     def set_window(self, window):
-        self.window = window
+        self._window = window
 
     def unfullscreen_and_maximize(self):
-        if self.window:
-            self.window.toggle_fullscreen()
-            self.window.maximize()
+        if self._window:
+            self._window.toggle_fullscreen()
+            self._window.maximize()
+
+    def enter_checklist_mode(self) -> dict[str, str]:
+        """Shrink the window into a translucent overlay docked to the top right."""
+        if not self._window:
+            return {"status": "error", "message": "Window unavailable"}
+
+        if self._window.fullscreen:
+            self._window.toggle_fullscreen()
+            self._window.fullscreen = False
+
+        self._window.resize(OVERLAY_WIDTH, OVERLAY_HEIGHT)
+        screen = webview.screens[0]
+        x = max(screen.width - OVERLAY_WIDTH - OVERLAY_MARGIN, OVERLAY_MARGIN)
+        self._window.move(x, OVERLAY_MARGIN)
+        self._window.on_top = True
+        return {"status": "ok"}
 
     def get_routines(self):
         return self.routines
@@ -47,8 +69,8 @@ class Api:
             self.current_task_index = 0
             return {"status": "ok", "type": "checklist"}
         elif routine["type"] == "quit":
-            if self.window:
-                self.window.destroy()
+            if self._window:
+                self._window.destroy()
             return {"status": "ok", "type": "quit"}
         elif routine["type"] == "quick_job":
             self.current_checklist_name = routine["name"]
@@ -87,9 +109,9 @@ class Api:
 
     def launch_everything_normally(self):
         print("Launching everything normally...")
-        if self.window:
-            self.window.destroy()
+        if self._window:
+            self._window.destroy()
 
     def quit_app(self):
-        if self.window:
-            self.window.destroy()
+        if self._window:
+            self._window.destroy()

@@ -11,9 +11,21 @@ if sys.stderr is None:
 import webview
 from backend.backend import Api
 
+
 def get_html_path():
     html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'frontend', 'index.html')
     return f"file:///{html_path}".replace('\\', '/')
+
+
+def get_storage_path():
+    base = os.environ.get('LOCALAPPDATA') or os.path.expanduser('~')
+    storage_path = os.path.join(base, 'Genesis', 'webview2')
+    try:
+        os.makedirs(storage_path, exist_ok=True)
+    except OSError:
+        return None
+    return storage_path
+
 
 if __name__ == '__main__':
     api = Api()
@@ -27,4 +39,4 @@ if __name__ == '__main__':
         easy_drag=False,
     )
     api.set_window(window)
-    webview.start()
+    webview.start(private_mode=False, storage_path=get_storage_path())

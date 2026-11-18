@@ -52,34 +52,45 @@
             }, 50);
         }
 
+        let buttonsLoading = false;
+
         async function loadButtons() {
-            if (window._buttonsLoaded) return;
-            window._buttonsLoaded = true;
+            if (window._buttonsLoaded || buttonsLoading) return;
+            if (!window.pywebview || !window.pywebview.api) return;
 
-            const routines = await pywebview.api.get_routines();
-            const startScreen = document.getElementById('screen-start');
-            startScreen.innerHTML = ''; // clear existing
-            
-            routines.forEach(routine => {
-                const btn = document.createElement('button');
-                btn.className = 'btn';
-                btn.innerText = routine.name;
-                btn.onclick = () => startRoutine(routine.name);
-                startScreen.appendChild(btn);
-            });
+            buttonsLoading = true;
+            try {
+                const routines = await pywebview.api.get_routines();
+                if (!Array.isArray(routines) || routines.length === 0) return;
+
+                const startScreen = document.getElementById('screen-start');
+                startScreen.innerHTML = ''; // clear existing
+
+                routines.forEach(routine => {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn';
+                    btn.innerText = routine.name;
+                    btn.onclick = () => startRoutine(routine.name);
+                    startScreen.appendChild(btn);
+                });
+
+                window._buttonsLoaded = true;
+            } catch (e) {
+                console.log('Failed to load routines, retrying...', e);
+            } finally {
+                buttonsLoading = false;
+            }
         }
 
-        if (window.pywebview && window.pywebview.api) {
+        window.addEventListener('pywebviewready', loadButtons);
+        loadButtons();
+        const buttonsTimer = setInterval(() => {
+            if (window._buttonsLoaded) {
+                clearInterval(buttonsTimer);
+                return;
+            }
             loadButtons();
-        } else {
-            window.addEventListener('pywebviewready', loadButtons);
-            let checkTimer = setInterval(() => {
-                if (window.pywebview && window.pywebview.api) {
-                    clearInterval(checkTimer);
-                    loadButtons();
-                }
-            }, 100);
-        }
+        }, 100);
 
         async function startRoutine(name) {
             const response = await pywebview.api.start_routine(name);

@@ -3,7 +3,6 @@ import os
 from pathlib import Path
 
 import webview
-import yaml
 
 # Locate the checklists directory relative to the src folder
 CHECKLISTS_DIR = Path(__file__).parent.parent.parent / "checklists"
@@ -54,6 +53,7 @@ class Api:
     def load_checklist(self, filename):
         filepath = CHECKLISTS_DIR / filename
         if filepath.exists():
+            import yaml
             with open(filepath, 'r') as f:
                 return yaml.safe_load(f)
         return []
